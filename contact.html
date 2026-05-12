@@ -1,0 +1,988 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <link rel="icon" href="favicon.ico">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+    <title>Contact — Sevrus.xyz</title>
+
+    <style>
+
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            min-height: 100vh;
+
+            font-family: Inter, Arial, sans-serif;
+            color: #eef2ff;
+
+            background:
+                radial-gradient(circle at top left,
+                rgba(78, 167, 255, 0.14),
+                transparent 20%),
+
+                radial-gradient(circle at bottom right,
+                rgba(255, 109, 204, 0.18),
+                transparent 16%),
+
+                linear-gradient(
+                    180deg,
+                    #090b14 0%,
+                    #0f172a 100%
+                );
+
+            display: flex;
+            flex-direction: column;
+
+            overflow-x: hidden;
+            position: relative;
+
+            padding-bottom: env(safe-area-inset-bottom);
+        }
+
+        body::before {
+            content: "";
+
+            position: fixed;
+            inset: 0;
+
+            background:
+                radial-gradient(
+                    circle at center,
+                    rgba(255, 255, 255, 0.08),
+                    transparent 33%
+                );
+
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        .glow-blob {
+            position: fixed;
+
+            top: 8%;
+            left: 50%;
+
+            width: 720px;
+            height: 520px;
+
+            transform: translateX(-50%);
+
+            background:
+                rgba(255, 255, 255, 0.08);
+
+            filter: blur(80px);
+
+            border-radius: 50%;
+
+            z-index: 0;
+        }
+
+        .background-dots {
+            position: fixed;
+            inset: 0;
+
+            pointer-events: none;
+            overflow: hidden;
+
+            z-index: 0;
+        }
+
+        .background-dots .dot {
+            position: absolute;
+
+            width: 4px;
+            height: 4px;
+
+            border-radius: 50%;
+
+            background:
+                rgba(255, 255, 255, 0.15);
+
+            box-shadow:
+                0 0 0 1px rgba(255, 255, 255, 0.05);
+
+            transform:
+                translate(-50%, -50%);
+
+            transition:
+                transform 0.32s ease;
+        }
+
+        header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+
+            padding: 1.25rem 2rem;
+
+            position: sticky;
+            top: 0;
+
+            backdrop-filter: blur(18px);
+
+            background:
+                rgba(9, 11, 20, 0.78);
+
+            border-bottom:
+                1px solid rgba(255, 255, 255, 0.08);
+
+            z-index: 10;
+        }
+
+        header h1 {
+            margin: 0;
+
+            font-size: 1.2rem;
+
+            letter-spacing: 0.08em;
+        }
+
+        nav {
+            display: flex;
+            gap: 1rem;
+        }
+
+        nav a {
+            color: #eef2ff;
+
+            text-decoration: none;
+            font-weight: 600;
+
+            transition:
+                opacity 0.2s ease,
+                transform 0.2s ease;
+        }
+
+        nav a:hover,
+        nav a[aria-current="page"] {
+            opacity: 0.85;
+
+            transform: translateY(-1px);
+        }
+
+        main {
+            position: relative;
+            z-index: 1;
+
+            width:
+                min(1080px, calc(100% - 2rem));
+
+            margin: 2rem auto 0;
+
+            padding: 2.5rem;
+
+            border-radius: 32px;
+
+            background:
+                rgba(15, 23, 42, 0.78);
+
+            border:
+                1px solid rgba(255, 255, 255, 0.08);
+
+            box-shadow:
+                0 35px 120px rgba(0, 0, 0, 0.26);
+
+            backdrop-filter: blur(20px);
+
+            animation:
+                floatIn 0.9s ease both;
+        }
+
+        .hero {
+            display: grid;
+            gap: 1.5rem;
+
+            margin-bottom: 3rem;
+        }
+
+        .hero .eyebrow {
+            display: inline-flex;
+
+            padding: 0.4rem 0.85rem;
+
+            border-radius: 999px;
+
+            background:
+                rgba(255, 255, 255, 0.06);
+
+            color: #93c5fd;
+
+            font-size: 0.85rem;
+
+            letter-spacing: 0.08em;
+            text-transform: uppercase;
+
+            width: fit-content;
+        }
+
+        .hero h1 {
+            margin: 0;
+
+            font-size:
+                clamp(2.5rem, 4vw, 4rem);
+
+            line-height: 1.05;
+        }
+
+        .hero p {
+            margin: 0;
+
+            color: #cbd5e1;
+
+            max-width: 760px;
+
+            line-height: 1.8;
+        }
+
+        .profile-panel {
+            display: grid;
+
+            grid-template-columns:
+                360px 1fr;
+
+            gap: 3rem;
+
+            align-items: center;
+
+            margin-bottom: 2rem;
+        }
+
+        .profile-avatar-container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+
+            position: relative;
+        }
+
+        .profile-avatar {
+            position: relative;
+
+            width: 320px;
+            height: 320px;
+
+            overflow: hidden;
+
+            isolation: isolate;
+
+            cursor: pointer;
+
+            will-change:
+                transform,
+                border-radius;
+
+            animation:
+                morph 8s ease-in-out infinite,
+                floating 6s ease-in-out infinite;
+
+            transition:
+                transform 0.12s linear,
+                filter 0.12s linear;
+        }
+
+        .profile-avatar::before {
+            content: "";
+
+            position: absolute;
+            inset: -5px;
+
+            border-radius: inherit;
+
+            background:
+                linear-gradient(
+                    135deg,
+                    rgba(96,165,250,0.95),
+                    rgba(192,132,252,0.95),
+                    rgba(255,255,255,0.9)
+                );
+
+            z-index: -1;
+
+            filter: blur(15px);
+
+            opacity: 0.9;
+
+            transition:
+                transform 0.08s linear,
+                filter 0.08s linear;
+        }
+
+        .profile-avatar img {
+            width: 100%;
+            height: 100%;
+
+            object-fit: cover;
+
+            display: block;
+
+            pointer-events: none;
+
+            filter:
+                contrast(1.05)
+                saturate(1.1);
+        }
+
+        .contact-card,
+        .form-section {
+            padding: 1.75rem;
+
+            border-radius: 28px;
+
+            background:
+                rgba(255, 255, 255, 0.06);
+
+            border:
+                1px solid rgba(255, 255, 255, 0.1);
+
+            backdrop-filter: blur(22px);
+
+            box-shadow:
+                0 24px 60px rgba(0, 0, 0, 0.18);
+        }
+
+        .profile-details {
+            display: grid;
+            gap: 1rem;
+        }
+
+        .profile-details h2 {
+            margin: 0;
+
+            font-size: 2.5rem;
+        }
+
+        .meta {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.75rem;
+
+            color: #94a3b8;
+        }
+
+        .meta span {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.4rem;
+
+            padding: 0.55rem 0.85rem;
+
+            border-radius: 999px;
+
+            background:
+                rgba(255, 255, 255, 0.06);
+
+            border:
+                1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .profile-email {
+            color: #e2e8f0;
+            word-break: break-word;
+        }
+
+        .button {
+            border:
+                1px solid rgba(255, 255, 255, 0.16);
+
+            background:
+                rgba(255, 255, 255, 0.08);
+
+            color: #eef2ff;
+
+            padding: 1rem 1.6rem;
+
+            border-radius: 999px;
+
+            cursor: pointer;
+
+            font-weight: 700;
+
+            transition:
+                transform 0.2s ease,
+                background 0.2s ease,
+                border-color 0.2s ease;
+
+            width: fit-content;
+        }
+
+        .button:hover {
+            transform: translateY(-2px);
+
+            background:
+                rgba(255, 255, 255, 0.16);
+
+            border-color:
+                rgba(255, 255, 255, 0.28);
+        }
+
+        .form-section {
+            max-height: 0;
+
+            overflow: hidden;
+
+            opacity: 0;
+
+            transform: translateY(12px);
+
+            transition:
+                max-height 0.4s ease,
+                opacity 0.3s ease,
+                transform 0.3s ease,
+                padding 0.3s ease;
+
+            padding-top: 0;
+            padding-bottom: 0;
+        }
+
+        .form-section.active {
+            max-height: 700px;
+
+            opacity: 1;
+
+            transform: translateY(0);
+
+            padding-top: 1.75rem;
+            padding-bottom: 1.75rem;
+        }
+
+        .form-row {
+            display: grid;
+            gap: 0.5rem;
+
+            margin-bottom: 1.25rem;
+        }
+
+        label {
+            color: #cbd5e1;
+            font-size: 0.95rem;
+        }
+
+        input,
+        textarea {
+            width: 100%;
+
+            border:
+                1px solid rgba(255, 255, 255, 0.14);
+
+            border-radius: 18px;
+
+            background:
+                rgba(255, 255, 255, 0.07);
+
+            color: #f8fafc;
+
+            padding: 1rem;
+
+            font-size: 1rem;
+
+            outline: none;
+
+            transition:
+                border-color 0.2s ease,
+                box-shadow 0.2s ease;
+        }
+
+        input:focus,
+        textarea:focus {
+            border-color:
+                rgba(96, 165, 250, 0.8);
+
+            box-shadow:
+                0 0 0 6px rgba(96, 165, 250, 0.12);
+        }
+
+        textarea {
+            min-height: 170px;
+            resize: vertical;
+        }
+
+        footer {
+            margin-top: auto;
+
+            padding: 1rem 2rem 1.5rem;
+
+            text-align: center;
+
+            color: #a8b0d0;
+
+            font-size: 0.95rem;
+        }
+
+        @keyframes floatIn {
+
+            from {
+                opacity: 0;
+                transform: translateY(22px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes floating {
+
+            0% {
+                transform: translateY(0px);
+            }
+
+            50% {
+                transform: translateY(-12px);
+            }
+
+            100% {
+                transform: translateY(0px);
+            }
+        }
+
+        @keyframes morph {
+
+            0% {
+                border-radius:
+                    42% 58% 70% 30% /
+                    30% 30% 70% 70%;
+            }
+
+            25% {
+                border-radius:
+                    58% 42% 35% 65% /
+                    50% 60% 40% 50%;
+            }
+
+            50% {
+                border-radius:
+                    30% 70% 55% 45% /
+                    68% 45% 55% 32%;
+            }
+
+            75% {
+                border-radius:
+                    40% 60% 30% 70% /
+                    35% 65% 35% 65%;
+            }
+
+            100% {
+                border-radius:
+                    42% 58% 70% 30% /
+                    30% 30% 70% 70%;
+            }
+        }
+
+        @media (max-width: 900px) {
+
+            .profile-panel {
+                grid-template-columns: 1fr;
+            }
+
+            .profile-avatar {
+                width: 260px;
+                height: 260px;
+            }
+        }
+
+        @media (max-width: 768px) {
+
+            header {
+                flex-direction: column;
+                gap: 1rem;
+
+                text-align: center;
+            }
+
+            main {
+                margin: 1.25rem auto 0;
+                padding: 1.75rem;
+            }
+
+            .button {
+                width: 100%;
+            }
+
+            .glow-blob {
+                width: 520px;
+                height: 380px;
+            }
+        }
+
+    </style>
+</head>
+
+<body>
+
+    <div class="glow-blob"></div>
+
+    <div class="background-dots"></div>
+
+    <header>
+
+        <h1>Sevrus.xyz</h1>
+
+        <nav>
+            <a href="index.html">Home</a>
+            <a href="projects.html">Projects</a>
+            <a href="contact.html" aria-current="page">Contact</a>
+        </nav>
+
+    </header>
+
+    <main>
+
+        <section class="hero">
+
+            <span class="eyebrow">
+                Contact
+            </span>
+
+            <h1>
+                Reach out to Sahil Gour
+            </h1>
+
+            <p>
+                You can email me at
+                <strong>itzsevrus@duck.com</strong>.
+                I may reply slowly sometimes,
+                but I read everything.
+            </p>
+
+        </section>
+
+        <section class="profile-panel">
+
+            <div class="profile-avatar-container">
+
+                <div class="profile-avatar">
+
+                    <img
+                        src="static/img/profile.png"
+                        alt="Profile Picture">
+
+                </div>
+
+            </div>
+
+            <div class="contact-card">
+
+                <div class="profile-details">
+
+                    <h2>
+                        Sahil Gour
+                    </h2>
+
+                    <div class="meta">
+
+                        <span>
+                            IN 🇮🇳
+                        </span>
+
+                        <span class="profile-email">
+                            itzsevrus@duck.com
+                        </span>
+
+                    </div>
+
+                    <p>
+                        Tap Contact me to open the form below.
+                    </p>
+
+                    <button
+                        id="toggle-form"
+                        class="button">
+
+                        Contact me
+
+                    </button>
+
+                </div>
+
+            </div>
+
+        </section>
+
+        <section class="form-section">
+
+            <div class="form-row">
+
+                <label for="subject">
+                    Subject
+                </label>
+
+                <input
+                    id="subject"
+                    type="text"
+                    value="hello sevrus">
+
+            </div>
+
+            <div class="form-row">
+
+                <label for="message">
+                    Content
+                </label>
+
+                <textarea id="message">Hello Sevrus,
+
+I would love to connect with you...</textarea>
+
+            </div>
+
+            <button
+                id="send-mail"
+                class="button">
+
+                Send via Mail App
+
+            </button>
+
+        </section>
+
+    </main>
+
+    <footer>
+
+        <p>
+            &copy; 2026 Sevrus.xyz.
+            Thank you for stopping by.
+        </p>
+
+    </footer>
+
+    <script>
+
+        const toggleButton =
+            document.getElementById('toggle-form');
+
+        const formSection =
+            document.querySelector('.form-section');
+
+        const sendButton =
+            document.getElementById('send-mail');
+
+        const dotsContainer =
+            document.querySelector('.background-dots');
+
+        const avatar =
+            document.querySelector('.profile-avatar');
+
+        let dots = [];
+        let dotData = [];
+
+        /*
+            DOTS
+        */
+
+        const generateDots = () => {
+
+            dotsContainer.innerHTML = '';
+
+            const spacing = 50;
+
+            const cols =
+                Math.ceil(window.innerWidth / spacing);
+
+            const rows =
+                Math.ceil(window.innerHeight / spacing);
+
+            for (let row = 0; row <= rows; row++) {
+
+                for (let col = 0; col <= cols; col++) {
+
+                    const dot =
+                        document.createElement('span');
+
+                    dot.className = 'dot';
+
+                    dot.style.left =
+                        `${col * spacing}px`;
+
+                    dot.style.top =
+                        `${row * spacing}px`;
+
+                    dotsContainer.appendChild(dot);
+                }
+            }
+
+            dots =
+                Array.from(
+                    document.querySelectorAll('.dot')
+                );
+
+            updateDotData();
+        };
+
+        const updateDotData = () => {
+
+            dotData = dots.map((dot) => {
+
+                const rect =
+                    dot.getBoundingClientRect();
+
+                return {
+                    element: dot,
+                    x: rect.left + rect.width / 2,
+                    y: rect.top + rect.height / 2
+                };
+            });
+        };
+
+        generateDots();
+
+        /*
+            FORM
+        */
+
+        toggleButton.addEventListener('click', () => {
+
+            formSection.classList.toggle('active');
+
+            toggleButton.textContent =
+                formSection.classList.contains('active')
+                ? 'Hide form'
+                : 'Contact me';
+        });
+
+        sendButton.addEventListener('click', () => {
+
+            const subject =
+                encodeURIComponent(
+                    document.getElementById('subject').value
+                );
+
+            const message =
+                encodeURIComponent(
+                    document.getElementById('message').value
+                );
+
+            location.href =
+                `mailto:itzsevrus@duck.com?subject=${subject}&body=${message}`;
+        });
+
+        /*
+            DOT MOUSE EFFECT
+        */
+
+        const handleMouseMove = (event) => {
+
+            dotData.forEach((dot) => {
+
+                const dx =
+                    dot.x - event.clientX;
+
+                const dy =
+                    dot.y - event.clientY;
+
+                const distance =
+                    Math.hypot(dx, dy);
+
+                const maxDistance = 180;
+
+                const strength =
+                    Math.max(
+                        0,
+                        (maxDistance - distance)
+                        / maxDistance
+                    );
+
+                const offset =
+                    strength * 18;
+
+                const angle =
+                    distance === 0
+                    ? 0
+                    : Math.atan2(dy, dx);
+
+                const translateX =
+                    Math.cos(angle) * offset;
+
+                const translateY =
+                    Math.sin(angle) * offset;
+
+                dot.element.style.transform =
+                    `translate(calc(-50% + ${translateX}px), calc(-50% + ${translateY}px))`;
+            });
+        };
+
+        const resetDots = () => {
+
+            dots.forEach((dot) => {
+
+                dot.style.transform =
+                    'translate(-50%, -50%)';
+            });
+        };
+
+        window.addEventListener(
+            'mousemove',
+            handleMouseMove
+        );
+
+        window.addEventListener(
+            'mouseleave',
+            resetDots
+        );
+
+        window.addEventListener(
+            'resize',
+            generateDots
+        );
+
+        /*
+            AVATAR SHAKE EFFECT
+        */
+
+        let lastX = 0;
+        let lastY = 0;
+        let lastTime = Date.now();
+
+        window.addEventListener('mousemove', (event) => {
+
+            const now = Date.now();
+
+            const deltaTime =
+                now - lastTime;
+
+            const deltaX =
+                event.clientX - lastX;
+
+            const deltaY =
+                event.clientY - lastY;
+
+            const speed =
+                Math.sqrt(
+                    deltaX * deltaX +
+                    deltaY * deltaY
+                ) / deltaTime;
+
+            const intensity =
+                Math.min(speed * 12, 18);
+
+            const rotate =
+                (Math.random() - 0.5)
+                * intensity;
+
+            avatar.style.transform =
+                `
+                rotate(${rotate}deg)
+                scale(${1 + intensity / 250})
+                `;
+
+            lastX = event.clientX;
+            lastY = event.clientY;
+            lastTime = now;
+        });
+
+        setInterval(() => {
+
+            avatar.style.transform = '';
+
+        }, 120);
+
+    </script>
+
+</body>
+</html>

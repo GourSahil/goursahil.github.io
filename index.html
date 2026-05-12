@@ -1,12 +1,517 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta charset="UTF-8" />
+    <link rel="icon" href="favicon.ico">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
     <title>Sevrus.xyz</title>
+
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --bg: #090b14;
+            --card: rgba(255, 255, 255, 0.06);
+            --border: rgba(255, 255, 255, 0.1);
+            --text: #eef2ff;
+            --muted: #94a3b8;
+            --accent: #60a5fa;
+        }
+
+        body {
+            min-height: 100vh;
+
+            font-family: Inter, Arial, sans-serif;
+            color: var(--text);
+
+            background:
+                radial-gradient(circle at top left,
+                rgba(96, 165, 250, 0.12),
+                transparent 20%),
+
+                radial-gradient(circle at bottom right,
+                rgba(168, 85, 247, 0.12),
+                transparent 20%),
+
+                linear-gradient(180deg,
+                #090b14 0%,
+                #0f172a 100%);
+
+            overflow-x: hidden;
+            position: relative;
+        }
+
+        body::before {
+            content: "";
+
+            position: fixed;
+            inset: 0;
+
+            background:
+                radial-gradient(circle at center,
+                rgba(255,255,255,0.05),
+                transparent 40%);
+
+            pointer-events: none;
+        }
+
+        .background-grid {
+            position: fixed;
+            inset: 0;
+
+            background-image:
+                linear-gradient(rgba(255,255,255,0.03) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(255,255,255,0.03) 1px, transparent 1px);
+
+            background-size: 50px 50px;
+
+            mask-image: radial-gradient(circle at center, black 30%, transparent 85%);
+
+            z-index: 0;
+        }
+
+        .glow {
+            position: fixed;
+
+            width: 700px;
+            height: 700px;
+
+            background: rgba(96, 165, 250, 0.12);
+
+            filter: blur(120px);
+
+            border-radius: 50%;
+
+            top: -200px;
+            left: -100px;
+
+            z-index: 0;
+        }
+
+        header {
+            position: sticky;
+            top: 0;
+
+            z-index: 10;
+
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+
+            padding: 1.2rem 2rem;
+
+            backdrop-filter: blur(16px);
+
+            background: rgba(9, 11, 20, 0.65);
+
+            border-bottom: 1px solid rgba(255,255,255,0.06);
+        }
+
+        .logo {
+            font-size: 1.2rem;
+            font-weight: 800;
+            letter-spacing: 0.08em;
+        }
+
+        nav {
+            display: flex;
+            gap: 1.5rem;
+        }
+
+        nav a {
+            color: var(--text);
+            text-decoration: none;
+            font-weight: 600;
+
+            transition: 0.2s ease;
+        }
+
+        nav a:hover {
+            opacity: 0.7;
+        }
+
+        .hero {
+            position: relative;
+            z-index: 1;
+
+            width: min(1200px, calc(100% - 2rem));
+
+            margin: 4rem auto;
+
+            display: grid;
+            grid-template-columns: 1.1fr 0.9fr;
+            gap: 3rem;
+            align-items: center;
+        }
+
+        .hero-left {
+            animation: fadeUp 0.8s ease;
+        }
+
+        .badge {
+            display: inline-flex;
+
+            padding: 0.45rem 0.9rem;
+
+            border-radius: 999px;
+
+            background: rgba(255,255,255,0.05);
+
+            border: 1px solid rgba(255,255,255,0.08);
+
+            color: #93c5fd;
+
+            margin-bottom: 1.5rem;
+
+            font-size: 0.9rem;
+            font-weight: 600;
+        }
+
+        .hero h1 {
+            font-size: clamp(3rem, 6vw, 5rem);
+            line-height: 0.95;
+
+            margin-bottom: 1.5rem;
+        }
+
+        .gradient-text {
+            background:
+                linear-gradient(90deg,
+                #60a5fa,
+                #c084fc);
+
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .hero p {
+            color: var(--muted);
+
+            font-size: 1.05rem;
+
+            line-height: 1.8;
+
+            max-width: 650px;
+
+            margin-bottom: 2rem;
+        }
+
+        .buttons {
+            display: flex;
+            gap: 1rem;
+            flex-wrap: wrap;
+        }
+
+        .button {
+            padding: 1rem 1.5rem;
+
+            border-radius: 16px;
+
+            border: 1px solid rgba(255,255,255,0.08);
+
+            text-decoration: none;
+
+            color: var(--text);
+
+            font-weight: 700;
+
+            transition: 0.25s ease;
+        }
+
+        .button.primary {
+            background:
+                linear-gradient(135deg,
+                #2563eb,
+                #7c3aed);
+
+            border: none;
+        }
+
+        .button:hover {
+            transform: translateY(-3px);
+        }
+
+        .hero-right {
+            display: flex;
+            justify-content: center;
+
+            animation: fadeUp 1s ease;
+        }
+
+        .glass-card {
+            width: 100%;
+            max-width: 420px;
+
+            padding: 2rem;
+
+            border-radius: 32px;
+
+            background: rgba(255,255,255,0.06);
+
+            border: 1px solid rgba(255,255,255,0.08);
+
+            backdrop-filter: blur(20px);
+
+            box-shadow:
+                0 30px 100px rgba(0,0,0,0.3);
+        }
+
+        .terminal-header {
+            display: flex;
+            gap: 0.5rem;
+
+            margin-bottom: 1.5rem;
+        }
+
+        .terminal-header span {
+            width: 12px;
+            height: 12px;
+
+            border-radius: 50%;
+
+            background: rgba(255,255,255,0.4);
+        }
+
+        .code {
+            font-family: monospace;
+
+            color: #cbd5e1;
+
+            line-height: 2;
+        }
+
+        .code .blue {
+            color: #60a5fa;
+        }
+
+        .code .purple {
+            color: #c084fc;
+        }
+
+        .stats {
+            position: relative;
+            z-index: 1;
+
+            width: min(1200px, calc(100% - 2rem));
+
+            margin: 4rem auto;
+
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 1.5rem;
+        }
+
+        .stat-card {
+            padding: 2rem;
+
+            border-radius: 28px;
+
+            background: rgba(255,255,255,0.05);
+
+            border: 1px solid rgba(255,255,255,0.08);
+
+            backdrop-filter: blur(18px);
+
+            transition: 0.25s ease;
+        }
+
+        .stat-card:hover {
+            transform: translateY(-6px);
+        }
+
+        .stat-card h2 {
+            font-size: 2.2rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .stat-card p {
+            color: var(--muted);
+        }
+
+        footer {
+            position: relative;
+            z-index: 1;
+
+            padding: 2rem;
+
+            text-align: center;
+
+            color: #94a3b8;
+        }
+
+        @keyframes fadeUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @media (max-width: 900px) {
+
+            .hero {
+                grid-template-columns: 1fr;
+            }
+
+            .stats {
+                grid-template-columns: 1fr;
+            }
+
+            header {
+                flex-direction: column;
+                gap: 1rem;
+            }
+
+            .hero h1 {
+                font-size: 3rem;
+            }
+        }
+    </style>
 </head>
+
 <body>
-    <h1>Welcome</h1>
-    <p>We welcome you here!</p>
+
+    <div class="background-grid"></div>
+    <div class="glow"></div>
+
+    <header>
+
+        <div class="logo">
+            Sevrus.xyz
+        </div>
+
+        <nav>
+            <a href="index.html">Home</a>
+            <a href="projects.html">Projects</a>
+            <a href="contact.html">Contact</a>
+        </nav>
+
+    </header>
+
+    <section class="hero">
+
+        <div class="hero-left">
+
+            <div class="badge">
+                ⚡ Developer • Linux • AI
+            </div>
+
+            <h1>
+                Building cool
+                <span class="gradient-text">
+                    digital experiences
+                </span>
+                from scratch.
+            </h1>
+
+            <p>
+                Hi, I'm Sahil. I build projects around
+                Linux, AI, backend systems, automation,
+                and creative web experiences.
+                Welcome to my corner of the internet 🚀
+            </p>
+
+            <div class="buttons">
+
+                <a href="projects.html" class="button primary">
+                    View Projects
+                </a>
+
+                <a href="contact.html" class="button">
+                    Contact Me
+                </a>
+
+            </div>
+
+        </div>
+
+        <div class="hero-right">
+
+            <div class="glass-card">
+
+                <div class="terminal-header">
+                    <span></span>
+                    <span></span>
+                    <span></span>
+                </div>
+
+                <div class="code">
+
+                    <div>
+                        <span class="blue">const</span>
+                        developer =
+                    </div>
+
+                    <div>{</div>
+
+                    <div>
+                        &nbsp;&nbsp;name:
+                        <span class="purple">
+                            "Sahil"
+                        </span>,
+                    </div>
+
+                    <div>
+                        &nbsp;&nbsp;stack:
+                        <span class="purple">
+                            ["Python", "Linux", "AI"]
+                        </span>,
+                    </div>
+
+                    <div>
+                        &nbsp;&nbsp;status:
+                        <span class="purple">
+                            "building cool stuff"
+                        </span>
+                    </div>
+
+                    <div>};</div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </section>
+
+    <section class="stats">
+
+        <div class="stat-card">
+            <h2>5+</h2>
+            <p>
+                Years of self-learning and experimentation
+            </p>
+        </div>
+
+        <div class="stat-card">
+            <h2>Linux</h2>
+            <p>
+                Arch + Hyprland enthusiast 🐧
+            </p>
+        </div>
+
+        <div class="stat-card">
+            <h2>AI</h2>
+            <p>
+                Exploring automation and intelligent systems
+            </p>
+        </div>
+
+    </section>
+
+    <footer>
+        © 2026 Sevrus.xyz — Built with caffeine and questionable sleep schedules.
+    </footer>
+
 </body>
 </html>

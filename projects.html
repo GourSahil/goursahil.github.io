@@ -1,0 +1,854 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <link rel="icon" href="favicon.ico">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+    <title>Projects — Sevrus.xyz</title>
+
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --bg: #090b14;
+            --card: rgba(255, 255, 255, 0.06);
+            --border: rgba(255, 255, 255, 0.08);
+            --text: #eef2ff;
+            --muted: #94a3b8;
+            --accent: #60a5fa;
+        }
+
+        body {
+            min-height: 100vh;
+
+            font-family: Inter, Arial, sans-serif;
+            color: var(--text);
+
+            background:
+                radial-gradient(circle at top left,
+                rgba(96, 165, 250, 0.12),
+                transparent 20%),
+
+                radial-gradient(circle at bottom right,
+                rgba(168, 85, 247, 0.12),
+                transparent 20%),
+
+                linear-gradient(180deg,
+                #090b14 0%,
+                #0f172a 100%);
+
+            overflow-x: hidden;
+            position: relative;
+        }
+
+        body::before {
+            content: "";
+
+            position: fixed;
+            inset: 0;
+
+            background:
+                radial-gradient(circle at center,
+                rgba(255,255,255,0.04),
+                transparent 40%);
+
+            pointer-events: none;
+
+            z-index: 0;
+        }
+
+        .background-dots {
+            position: fixed;
+            inset: 0;
+
+            overflow: hidden;
+            pointer-events: none;
+
+            z-index: 0;
+        }
+
+        .dot {
+            position: absolute;
+
+            width: 4px;
+            height: 4px;
+
+            border-radius: 50%;
+
+            background: rgba(255,255,255,0.14);
+
+            transform: translate(-50%, -50%);
+
+            transition: transform 0.25s ease;
+        }
+
+        .glow {
+            position: fixed;
+
+            width: 700px;
+            height: 700px;
+
+            background: rgba(96, 165, 250, 0.12);
+
+            filter: blur(120px);
+
+            border-radius: 50%;
+
+            top: -250px;
+            left: -150px;
+
+            z-index: 0;
+        }
+
+        header {
+            position: sticky;
+            top: 0;
+
+            z-index: 10;
+
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+
+            padding: 1.2rem 2rem;
+
+            backdrop-filter: blur(18px);
+
+            background: rgba(9, 11, 20, 0.72);
+
+            border-bottom:
+                1px solid rgba(255,255,255,0.06);
+        }
+
+        .logo {
+            font-size: 1.15rem;
+            font-weight: 800;
+
+            letter-spacing: 0.08em;
+        }
+
+        nav {
+            display: flex;
+            gap: 1.5rem;
+        }
+
+        nav a {
+            text-decoration: none;
+            color: var(--text);
+
+            font-weight: 600;
+
+            transition: 0.2s ease;
+        }
+
+        nav a:hover {
+            opacity: 0.7;
+        }
+
+        main {
+            position: relative;
+            z-index: 1;
+
+            width: min(1200px, calc(100% - 2rem));
+
+            margin: 3rem auto;
+        }
+
+        .hero {
+            margin-bottom: 3rem;
+            animation: fadeUp 0.8s ease;
+        }
+
+        .badge {
+            display: inline-flex;
+
+            padding: 0.45rem 0.9rem;
+
+            border-radius: 999px;
+
+            background: rgba(255,255,255,0.05);
+
+            border:
+                1px solid rgba(255,255,255,0.08);
+
+            color: #93c5fd;
+
+            margin-bottom: 1rem;
+
+            font-size: 0.85rem;
+            font-weight: 600;
+        }
+
+        .hero h1 {
+            font-size: clamp(2.8rem, 6vw, 5rem);
+
+            line-height: 0.95;
+
+            margin-bottom: 1rem;
+        }
+
+        .gradient {
+            background:
+                linear-gradient(90deg,
+                #60a5fa,
+                #c084fc);
+
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .hero p {
+            color: var(--muted);
+
+            max-width: 700px;
+
+            line-height: 1.8;
+        }
+
+        .projects-grid {
+            display: grid;
+
+            grid-template-columns:
+                repeat(auto-fit, minmax(280px, 1fr));
+
+            gap: 1.5rem;
+        }
+
+        .repo-card {
+            padding: 1.6rem;
+
+            border-radius: 28px;
+
+            background: rgba(255,255,255,0.05);
+
+            border:
+                1px solid rgba(255,255,255,0.08);
+
+            backdrop-filter: blur(20px);
+
+            transition:
+                transform 0.25s ease,
+                border-color 0.25s ease,
+                background 0.25s ease;
+
+            animation: fadeUp 0.6s ease;
+
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+        }
+
+        .repo-card:hover {
+            transform: scale(1.04);
+
+            border-color:
+                rgba(96, 165, 250, 0.35);
+
+            background:
+                rgba(255,255,255,0.08);
+        }
+
+        .repo-name {
+            font-size: 1.2rem;
+            font-weight: 700;
+
+            color: white;
+
+            text-decoration: none;
+
+            width: fit-content;
+        }
+
+        .repo-name:hover {
+            color: #93c5fd;
+        }
+
+        .repo-description {
+            color: var(--muted);
+
+            line-height: 1.7;
+
+            flex: 1;
+        }
+
+        .repo-meta {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.8rem;
+        }
+
+        .meta-pill {
+            padding: 0.45rem 0.8rem;
+
+            border-radius: 999px;
+
+            background: rgba(255,255,255,0.06);
+
+            border:
+                1px solid rgba(255,255,255,0.08);
+
+            color: #dbeafe;
+
+            font-size: 0.9rem;
+        }
+
+        .pagination {
+            margin-top: 3rem;
+
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .page-btn {
+            padding: 0.9rem 1.3rem;
+
+            border-radius: 14px;
+
+            border:
+                1px solid rgba(255,255,255,0.08);
+
+            background:
+                rgba(255,255,255,0.05);
+
+            color: white;
+
+            cursor: pointer;
+
+            font-weight: 700;
+
+            transition: 0.25s ease;
+        }
+
+        .page-btn:hover:not(:disabled) {
+            transform: translateY(-2px);
+
+            background:
+                rgba(255,255,255,0.1);
+        }
+
+        .page-btn:disabled {
+            opacity: 0.4;
+            cursor: not-allowed;
+        }
+
+        .page-indicator {
+            color: var(--muted);
+        }
+
+        .loading {
+            text-align: center;
+
+            color: var(--muted);
+
+            padding: 4rem 0;
+
+            font-size: 1.1rem;
+        }
+
+        footer {
+            position: relative;
+            z-index: 1;
+
+            padding: 2rem;
+
+            text-align: center;
+
+            color: var(--muted);
+        }
+
+        @keyframes fadeUp {
+            from {
+                opacity: 0;
+                transform: translateY(25px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @media (max-width: 768px) {
+
+            header {
+                flex-direction: column;
+                gap: 1rem;
+            }
+
+            .hero h1 {
+                font-size: 3rem;
+            }
+
+            .pagination {
+                flex-wrap: wrap;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="glow"></div>
+
+    <div class="background-dots"></div>
+
+    <header>
+
+        <div class="logo">
+            Sevrus.xyz
+        </div>
+
+        <nav>
+            <a href="index.html">Home</a>
+            <a href="projects.html">Projects</a>
+            <a href="contact.html">Contact</a>
+        </nav>
+
+    </header>
+
+    <main>
+
+        <section class="hero">
+
+            <div class="badge">
+                🚀 Open Source Projects
+            </div>
+
+            <h1>
+                My
+                <span class="gradient">
+                    GitHub Repositories
+                </span>
+            </h1>
+
+            <p>
+                A collection of projects, experiments,
+                tools, and chaotic midnight ideas turned
+                into code.
+            </p>
+
+        </section>
+
+        <section
+            id="projects-container"
+            class="projects-grid">
+
+        </section>
+
+        <div
+            id="loading"
+            class="loading">
+
+            Loading repositories...
+
+        </div>
+
+        <div class="pagination">
+
+            <button
+                id="prev-btn"
+                class="page-btn">
+
+                ← Previous
+
+            </button>
+
+            <div
+                id="page-indicator"
+                class="page-indicator">
+
+                Page 1
+
+            </div>
+
+            <button
+                id="next-btn"
+                class="page-btn">
+
+                Next →
+
+            </button>
+
+        </div>
+
+    </main>
+
+    <footer>
+        © 2026 Sevrus.xyz — Built with caffeine and terminal tabs.
+    </footer>
+
+    <script>
+
+        /*
+            CHANGE THIS
+        */
+
+        const GITHUB_USERNAME = "GourSahil";
+
+        /*
+            PAGINATION
+        */
+
+        const REPOS_PER_PAGE = 10;
+
+        let currentPage = 1;
+        let repositories = [];
+
+        const projectsContainer =
+            document.getElementById('projects-container');
+
+        const loadingElement =
+            document.getElementById('loading');
+
+        const prevButton =
+            document.getElementById('prev-btn');
+
+        const nextButton =
+            document.getElementById('next-btn');
+
+        const pageIndicator =
+            document.getElementById('page-indicator');
+
+        /*
+            TIME FORMATTER
+        */
+
+        function timeAgo(dateString) {
+
+            const now = new Date();
+
+            const updated =
+                new Date(dateString);
+
+            const seconds =
+                Math.floor((now - updated) / 1000);
+
+            const intervals = [
+
+                { label: 'year', seconds: 31536000 },
+                { label: 'month', seconds: 2592000 },
+                { label: 'day', seconds: 86400 },
+                { label: 'hour', seconds: 3600 },
+                { label: 'minute', seconds: 60 }
+
+            ];
+
+            for (const interval of intervals) {
+
+                const count =
+                    Math.floor(seconds / interval.seconds);
+
+                if (count >= 1) {
+
+                    return `${count} ${interval.label}${count > 1 ? 's' : ''} ago`;
+                }
+            }
+
+            return 'just now';
+        }
+
+        /*
+            FETCH REPOSITORIES
+        */
+
+        async function fetchRepositories() {
+
+            try {
+
+                const response =
+                    await fetch(
+                        `https://api.github.com/users/${GITHUB_USERNAME}/repos?sort=updated&per_page=100`
+                    );
+
+                repositories =
+                    await response.json();
+
+                repositories =
+                    repositories.filter(
+                        repo => !repo.fork
+                    );
+
+                renderPage(currentPage);
+
+            } catch (error) {
+
+                loadingElement.innerHTML =
+                    'Failed to load repositories 💀';
+
+                console.error(error);
+            }
+        }
+
+        /*
+            RENDER PAGE
+        */
+
+        function renderPage(page) {
+
+            projectsContainer.innerHTML = '';
+
+            const start =
+                (page - 1) * REPOS_PER_PAGE;
+
+            const end =
+                start + REPOS_PER_PAGE;
+
+            const paginatedRepos =
+                repositories.slice(start, end);
+
+            paginatedRepos.forEach(repo => {
+
+                const card =
+                    document.createElement('div');
+
+                card.className = 'repo-card';
+
+                card.innerHTML = `
+
+                    <a
+                        class="repo-name"
+                        href="${repo.html_url}"
+                        target="_blank">
+
+                        ${repo.name}
+
+                    </a>
+
+                    <div class="repo-description">
+
+                        ${repo.description || 'No description provided.'}
+
+                    </div>
+
+                    <div class="repo-meta">
+
+                        <div class="meta-pill">
+                            ⭐ ${repo.stargazers_count}
+                        </div>
+
+                        <div class="meta-pill">
+                            🕒 ${timeAgo(repo.updated_at)}
+                        </div>
+
+                    </div>
+                `;
+
+                projectsContainer.appendChild(card);
+            });
+
+            loadingElement.style.display = 'none';
+
+            updatePagination();
+        }
+
+        /*
+            UPDATE PAGINATION
+        */
+
+        function updatePagination() {
+
+            const totalPages =
+                Math.ceil(
+                    repositories.length / REPOS_PER_PAGE
+                );
+
+            pageIndicator.innerText =
+                `Page ${currentPage} of ${totalPages}`;
+
+            prevButton.disabled =
+                currentPage === 1;
+
+            nextButton.disabled =
+                currentPage === totalPages;
+        }
+
+        /*
+            BUTTON EVENTS
+        */
+
+        prevButton.addEventListener('click', () => {
+
+            if (currentPage > 1) {
+
+                currentPage--;
+
+                renderPage(currentPage);
+
+                window.scrollTo({
+                    top: 0,
+                    behavior: 'smooth'
+                });
+            }
+        });
+
+        nextButton.addEventListener('click', () => {
+
+            const totalPages =
+                Math.ceil(
+                    repositories.length / REPOS_PER_PAGE
+                );
+
+            if (currentPage < totalPages) {
+
+                currentPage++;
+
+                renderPage(currentPage);
+
+                window.scrollTo({
+                    top: 0,
+                    behavior: 'smooth'
+                });
+            }
+        });
+
+        /*
+            DYNAMIC DOTS
+        */
+
+        const dotsContainer =
+            document.querySelector('.background-dots');
+
+        let dots = [];
+        let dotData = [];
+
+        function generateDots() {
+
+            dotsContainer.innerHTML = '';
+
+            const spacing = 50;
+
+            const cols =
+                Math.ceil(window.innerWidth / spacing);
+
+            const rows =
+                Math.ceil(window.innerHeight / spacing);
+
+            for (let row = 0; row <= rows; row++) {
+
+                for (let col = 0; col <= cols; col++) {
+
+                    const dot =
+                        document.createElement('span');
+
+                    dot.className = 'dot';
+
+                    dot.style.left =
+                        `${col * spacing}px`;
+
+                    dot.style.top =
+                        `${row * spacing}px`;
+
+                    dotsContainer.appendChild(dot);
+                }
+            }
+
+            dots =
+                Array.from(
+                    document.querySelectorAll('.dot')
+                );
+
+            updateDotData();
+        }
+
+        function updateDotData() {
+
+            dotData = dots.map(dot => {
+
+                const rect =
+                    dot.getBoundingClientRect();
+
+                return {
+
+                    element: dot,
+
+                    x:
+                        rect.left + rect.width / 2,
+
+                    y:
+                        rect.top + rect.height / 2
+                };
+            });
+        }
+
+        function handleMouseMove(event) {
+
+            dotData.forEach(dot => {
+
+                const dx =
+                    dot.x - event.clientX;
+
+                const dy =
+                    dot.y - event.clientY;
+
+                const distance =
+                    Math.hypot(dx, dy);
+
+                const maxDistance = 180;
+
+                const strength =
+                    Math.max(
+                        0,
+                        (maxDistance - distance)
+                        / maxDistance
+                    );
+
+                const offset =
+                    strength * 18;
+
+                const angle =
+                    Math.atan2(dy, dx);
+
+                const translateX =
+                    Math.cos(angle) * offset;
+
+                const translateY =
+                    Math.sin(angle) * offset;
+
+                dot.element.style.transform =
+                    `translate(calc(-50% + ${translateX}px), calc(-50% + ${translateY}px))`;
+            });
+        }
+
+        function resetDots() {
+
+            dots.forEach(dot => {
+
+                dot.style.transform =
+                    'translate(-50%, -50%)';
+            });
+        }
+
+        generateDots();
+
+        window.addEventListener(
+            'mousemove',
+            handleMouseMove
+        );
+
+        window.addEventListener(
+            'mouseleave',
+            resetDots
+        );
+
+        window.addEventListener(
+            'resize',
+            generateDots
+        );
+
+        /*
+            START
+        */
+
+        fetchRepositories();
+
+    </script>
+
+</body>
+</html>
